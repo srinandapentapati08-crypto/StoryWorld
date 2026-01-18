@@ -29,13 +29,27 @@ const PageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+    padding: 2rem 1rem;
+
+  @media (min-width: 768px) {
+      padding: 3rem 2rem;
+    }
+
+    @media (min-width: 1200px) {
+      padding: 4rem 3rem;
+    }
 `;
 
 const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.75);
-  width: 100%;
-  padding: 4rem 2rem;
-  min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+
+    @media (min-width: 768px) {
+      padding: 3rem 2.5rem;
+    }
 `;
 
 const LogoContainer = styled(RouterLink)<{ $isScrolled: boolean }>`
@@ -84,8 +98,17 @@ const Subtitle = styled.p`
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.2rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.8rem;
+    }
+
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
 `;
 
 const BackLink = styled(RouterLink)`
