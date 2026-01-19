@@ -18,56 +18,78 @@ type Chapter = {
 /* ================= STYLES ================= */
 
 const ChapterWrapper = styled.div`
-background: url('/storyworld/textures/soft-paper-bg-3.jpg') repeat;
+  background: url('/storyworld/textures/soft-paper-bg-3.jpg') repeat;
   background-size: cover;
   min-height: 100vh;
-  padding: 5rem 2rem 2rem;
+  padding: 4rem 0.75rem 1.5rem; /* 🔥 smaller for 320px */
   font-family: 'Georgia', 'Times New Roman', Times, serif;
-  color: #1a1a1a;
   display: flex;
   justify-content: center;
+
+  @media (min-width: 375px) {
+    padding: 4.5rem 1rem 2rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 5rem 2rem 2rem;
+  }
 `;
+
 
 const ChapterContainer = styled.div`
   max-width: 1000px;
   background: rgba(255, 255, 255, 0.92);
-  padding: 3rem;
+  padding: 1.5rem; /* 🔥 mobile default */
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   width: 100%;
+  color:#1a1a1a;
+  @media (min-width: 375px) {
+    padding: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 3rem;
+  }
 `;
 
+
 const Title = styled.h1`
-  font-size: 2.6rem;
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
   text-align: center;
   color: #4a2f20;
   margin-bottom: 0.5rem;
 `;
 
 const ChapterNumber = styled.h2`
-  font-size: 1.3rem;
+  font-size: clamp(0.9rem, 3.5vw, 1.3rem);
   text-align: center;
   color: #a67c52;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
+
 const Content = styled.div<{ fontSize: number }>`
-  font-size: ${({ fontSize }) =>
-    `clamp(14px, ${fontSize / 16}rem + 0.5vw, ${fontSize}px)`};
-  line-height: 1.8;
+  font-size: clamp(
+    ${({ fontSize }) => Math.max(fontSize - 6, 14)}px,
+    4vw,
+    ${({ fontSize }) => fontSize}px
+  );
+  line-height: 1.75;
   text-align: justify;
 `;
+
 
 const DropCapParagraph = styled.p`
   &:first-letter {
     float: left;
-    font-size: 4rem;
-    line-height: 1;
+    font-size: clamp(2.2rem, 9vw, 4rem);
+    line-height: 0.95;
     font-weight: bold;
-    margin-right: 0.6rem;
+    margin-right: 0.5rem;
     color: #a16b40;
   }
 `;
+
 
 const Paragraph = styled.p`
   margin-bottom: 0.5rem;
@@ -228,14 +250,22 @@ export default function ChapterPage() {
   useEffect(() => {
     const onScroll = () => {
       setShrink(window.scrollY > 40);
-      const height = document.body.scrollHeight - window.innerHeight;
-      setProgress((window.scrollY / height) * 100);
+
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      if (docHeight <= 0) {
+        setProgress(0);
+      } else {
+        setProgress((window.scrollY / docHeight) * 100);
+      }
     };
 
     window.addEventListener('scroll', onScroll);
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
 
   if (loading) {
     return (

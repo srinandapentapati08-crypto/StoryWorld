@@ -42,15 +42,17 @@ const PageWrapper = styled.div`
 
 const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.75);
-    width: 100%;
-    max-width: 1200px;
-    padding: 2rem 1.5rem;
-    border-radius: 16px;
-
-    @media (min-width: 768px) {
-      padding: 3rem 2.5rem;
-    }
+  width: 100%;
+  padding: 2rem 1.5rem;
 `;
+
+const ContentWrapper = styled.div`
+  max-width: 1100px;   /* 🔥 THIS controls desktop look */
+  margin: 0 auto;
+  width: 100%;
+`;
+
+
 
 const LogoContainer = styled(RouterLink)<{ $isScrolled: boolean }>`
   position: fixed;
@@ -79,6 +81,12 @@ const LogoContainer = styled(RouterLink)<{ $isScrolled: boolean }>`
     object-fit: cover;
     border-radius: 50%;
   }
+@media (min-width: 768px) {
+    top: 2rem;
+    left: 2rem;
+    width: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
+    height: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
+  }
 `;
 
 const Title = styled.h1`
@@ -98,18 +106,27 @@ const Subtitle = styled.p`
 
 const GridContainer = styled.div`
   display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1.2rem;
+  grid-template-columns: 1fr; /* 🔥 Mobile: ONLY ONE card */
+  gap: 1.2rem;
 
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.8rem;
-    }
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr); /* Tablet */
+  }
 
-    @media (min-width: 1200px) {
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr); /* Laptop */
+  }
+
+  @media (min-width: 1400px) {
+    grid-template-columns: repeat(4, 1fr); /* Big screens */
+  }
 `;
+// const ContentWrapper = styled.div`
+//   max-width: 1200px;   /* 🔥 THIS IS THE KEY */
+//   margin: 0 auto;
+//   width: 100%;
+// `;
+
 
 const BackLink = styled(RouterLink)`
   display: inline-block;
@@ -212,6 +229,7 @@ export default function StoryPage() {
 
       <PageWrapper>
         <Overlay>
+        <ContentWrapper>
           <Title>{book.title}</Title>
           <Subtitle>{book.tagline}</Subtitle>
 
@@ -247,6 +265,7 @@ export default function StoryPage() {
               ))}
             </GridContainer>
           )}
+      </ContentWrapper>
         </Overlay>
       </PageWrapper>
     </>

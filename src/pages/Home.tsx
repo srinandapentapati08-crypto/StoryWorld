@@ -50,6 +50,21 @@ const LogoContainer = styled.div.withConfig({
     border-radius: 50%;
     object-fit: cover;
   }
+position: fixed;
+  z-index: 999;
+  left: 1rem;
+  top: 1rem;
+
+  width: ${(p) => (p.$isshrunk ? "44px" : "64px")};
+  height: ${(p) => (p.$isshrunk ? "44px" : "64px")};
+
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 20px rgba(143, 3, 3, 0.41);
+  padding: 0.3rem;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  cursor: pointer;
 `;
 
 const PageWrapper = styled.div`
