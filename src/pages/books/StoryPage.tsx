@@ -27,53 +27,52 @@ const PageWrapper = styled.div`
   min-height: 100vh;
   background: url('/storyworld/story-world-bg.jpg') center/cover no-repeat fixed;
   display: flex;
-  align-items: center;
   justify-content: center;
-    padding: 2rem 1rem;
-
-  @media (min-width: 768px) {
-      padding: 3rem 2rem;
-    }
-
-    @media (min-width: 1200px) {
-      padding: 4rem 3rem;
-    }
 `;
+
 
 const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.75);
   width: 100%;
-  padding: 2rem 1.5rem;
+  padding: 2rem 0;   /* 🔥 vertical only */
 `;
 
+
 const ContentWrapper = styled.div`
-  max-width: 1100px;   /* 🔥 THIS controls desktop look */
-  margin: 0 auto;
+  max-width: 1100px;
   width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @media (min-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 0;   /* 🔥 desktop = clean edges */
+  }
 `;
 
 
 
 const LogoContainer = styled(RouterLink)<{ $isScrolled: boolean }>`
   position: fixed;
-  top: 3rem;
-  left: 1rem;
+  top: 1.2rem;          /* 🔥 closer to top on mobile */
+  left: 0.8rem;
   z-index: 999;
-  width: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
-  height: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
+
+  /* 🔥 MOBILE FIRST (default) */
+  width: ${({ $isScrolled }) => ($isScrolled ? '38px' : '52px')};
+  height: ${({ $isScrolled }) => ($isScrolled ? '38px' : '52px')};
+
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 18px rgba(99, 32, 32, 0.67);
-  padding: 0.3rem;
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 12px rgba(99, 32, 32, 0.6);
+  padding: 0.25rem;
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
   cursor: pointer;
   overflow: hidden;
-
-  &:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 25px rgba(135, 15, 15, 0.61);
-  }
 
   img {
     width: 100%;
@@ -81,13 +80,26 @@ const LogoContainer = styled(RouterLink)<{ $isScrolled: boolean }>`
     object-fit: cover;
     border-radius: 50%;
   }
-@media (min-width: 768px) {
+
+  &:hover {
+    transform: scale(1.06);
+  }
+
+  /* 📱 TABLET */
+  @media (min-width: 768px) {
     top: 2rem;
     left: 2rem;
-    width: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
-    height: ${({ $isScrolled }) => ($isScrolled ? '50px' : '80px')};
+    width: ${({ $isScrolled }) => ($isScrolled ? '50px' : '70px')};
+    height: ${({ $isScrolled }) => ($isScrolled ? '50px' : '70px')};
+  }
+
+  /* 🖥 DESKTOP */
+  @media (min-width: 1200px) {
+    width: ${({ $isScrolled }) => ($isScrolled ? '55px' : '80px')};
+    height: ${({ $isScrolled }) => ($isScrolled ? '55px' : '80px')};
   }
 `;
+
 
 const Title = styled.h1`
   text-align: center;
@@ -130,17 +142,33 @@ const GridContainer = styled.div`
 
 const BackLink = styled(RouterLink)`
   display: inline-block;
-  margin: 1rem 0 2rem;
+  margin: 0 0 1.5rem;
   color: #ffd700;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
+
+  /* 🔥 Mobile: push it down & center */
+  @media (max-width: 767px) {
+    display: block;
+    text-align: center;
+    margin-top: 4.5rem; /* ⬅ clears logo space */
+  }
+
+  /* Tablet & up */
+  @media (min-width: 768px) {
+    position: fixed;
+    top: 1.2rem;
+    left: 5.5rem; /* ⬅ logo pakkana */
+    z-index: 998;
+  }
 
   &:hover {
     color: #fff;
     text-decoration: underline;
   }
 `;
+
 
 const ChapterCard = styled(RouterLink)`
   background: #1a1a1a;
