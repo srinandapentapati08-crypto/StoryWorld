@@ -50,6 +50,9 @@ const LogoContainer = styled.div.withConfig({
     border-radius: 50%;
     object-fit: cover;
   }
+&:hover {
+    transform: scale(1.20);
+  }
 position: fixed;
   z-index: 999;
   left: 1rem;
@@ -65,6 +68,7 @@ position: fixed;
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
   cursor: pointer;
+
 `;
 
 const PageWrapper = styled.div`

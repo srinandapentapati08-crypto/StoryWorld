@@ -137,6 +137,7 @@ const ChapterLogo = styled(Link)<{ $shrink: boolean }>`
   border-radius: 50%;
   padding: 0.3rem;
   backdrop-filter: blur(10px);
+    box-shadow: 0 0 18px rgba(99, 32, 32, 0.6);
   transition: all 0.3s ease;
 
   img {
@@ -144,6 +145,9 @@ const ChapterLogo = styled(Link)<{ $shrink: boolean }>`
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+  }
+&:hover {
+    transform: scale(1.06);
   }
 `;
 
