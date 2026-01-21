@@ -2,28 +2,18 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Redirecting…</title>
+    <title>Redirecting...</title>
     <script>
-        var segmentCount = 1; // storyworld
         var l = window.location;
-        var redirect =
-          l.protocol +
-          "//" +
-          l.hostname +
-          (l.port ? ":" + l.port : "") +
-          l.pathname
-            .split("/")
-            .slice(0, segmentCount + 1)
-            .join("/") +
+        var repo = "/storyworld";
+        var newUrl =
+          repo +
           "/?/" +
-          l.pathname
-            .slice(1)
-            .split("/")
-            .slice(segmentCount)
-            .join("/") +
-          l.search;
+          l.pathname.replace(repo, "").replace(/^\/+/, "") +
+          l.search +
+          l.hash;
 
-        window.location.replace(redirect);
+        window.location.replace(newUrl);
     </script>
 </head>
 <body></body>
