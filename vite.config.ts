@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/storyworld/',   // 🔥 THIS IS MANDATORY
+  base: '/',   // 🔥 THIS IS MANDATORY
 })
