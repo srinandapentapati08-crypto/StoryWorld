@@ -127,18 +127,34 @@ const NavButton = styled(Link)`
   }
 `;
 
-const ChapterLogo = styled(Link)<{ $shrink: boolean }>`
+const ChapterLogo = styled(Link)<{
+  $shrink: boolean;
+  $opacity: number;
+  $blur: number;
+  $hidden: boolean;
+}>`
   position: fixed;
   top: 1rem;
   left: 0.5rem;
   z-index: 999;
+
   width: ${({ $shrink }) => ($shrink ? '50px' : '80px')};
   height: ${({ $shrink }) => ($shrink ? '50px' : '80px')};
+
   border-radius: 50%;
   padding: 0.3rem;
   backdrop-filter: blur(10px);
-    box-shadow: 0 0 18px rgba(99, 32, 32, 0.6);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 18px rgba(99, 32, 32, 0.6);
+
+  opacity: ${({ $opacity }) => $opacity};
+  filter: blur(${({ $blur }) => $blur}px);
+  visibility: ${({ $hidden }) => ($hidden ? 'hidden' : 'visible')};
+
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
 
   img {
     width: 100%;
@@ -146,10 +162,8 @@ const ChapterLogo = styled(Link)<{ $shrink: boolean }>`
     object-fit: cover;
     border-radius: 50%;
   }
-&:hover {
-    transform: scale(1.06);
-  }
 `;
+
 
 const ProgressBar = styled.div<{ progress: number }>`
   position: fixed;
@@ -176,6 +190,7 @@ const FontControls = styled.div`
   }
 `;
 
+
 /* ================= COMPONENT ================= */
 
 export default function ChapterPage() {
@@ -189,6 +204,9 @@ export default function ChapterPage() {
   const [shrink, setShrink] = useState(false);
   const [fontSize, setFontSize] = useState(18);
   const contentRef = useRef<HTMLDivElement>(null);
+const [logoOpacity, setLogoOpacity] = useState(1);
+const [logoBlur, setLogoBlur] = useState(0);
+const [hideLogo, setHideLogo] = useState(false);
 
   /* -------- LOAD FROM GOOGLE SHEETS + DOCS -------- */
   useEffect(() => {
@@ -251,24 +269,60 @@ export default function ChapterPage() {
   }, [slug, chapterNum]);
 
   /* -------- SCROLL LOGIC -------- */
-  useEffect(() => {
-    const onScroll = () => {
-      setShrink(window.scrollY > 40);
+ useEffect(() => {
+   const onScroll = () => {
+     const y = window.scrollY;
+     const width = window.innerWidth;
 
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
+     // Progress bar (unchanged)
+     const docHeight =
+       document.documentElement.scrollHeight - window.innerHeight;
+     setProgress(docHeight > 0 ? (y / docHeight) * 100 : 0);
 
-      if (docHeight <= 0) {
-        setProgress(0);
-      } else {
-        setProgress((window.scrollY / docHeight) * 100);
-      }
-    };
+     // Find first paragraph position
+     const firstPara = document.querySelector('p');
+     const paraTop = firstPara
+       ? firstPara.getBoundingClientRect().top + window.scrollY
+       : 200;
 
-    window.addEventListener('scroll', onScroll);
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+     /* 📱 MOBILE */
+     if (width < 768) {
+       setShrink(false);
+
+       if (y > paraTop - 60) {
+         setHideLogo(true);
+         return;
+       }
+
+       setHideLogo(false);
+
+       const fade = Math.min(y / 160, 1);
+       setLogoOpacity(1 - fade * 0.5);   // light transparency
+       setLogoBlur(fade * 3);            // 🌫 blur instead of fade
+     }
+
+     /* 📱📱 TABLET */
+     else if (width < 1024) {
+       setHideLogo(false);
+       setShrink(y > 40);
+       setLogoOpacity(1);
+       setLogoBlur(0);
+     }
+
+     /* 💻 DESKTOP */
+     else {
+       setHideLogo(false);
+       setShrink(y > 40);
+       setLogoOpacity(1);
+       setLogoBlur(0);
+     }
+   };
+
+   window.addEventListener('scroll', onScroll);
+   onScroll();
+   return () => window.removeEventListener('scroll', onScroll);
+ }, []);
+
 
 
   if (loading) {
@@ -299,12 +353,19 @@ export default function ChapterPage() {
     <>
       <ProgressBar progress={progress} />
 
-      <ChapterLogo to={`/books/${slug}`} $shrink={shrink}>
+      <ChapterLogo
+        to={`/books/${slug}`}
+        $shrink={shrink}
+        $opacity={logoOpacity}
+        $blur={logoBlur}
+        $hidden={hideLogo}
+      >
         <img
           src={`${import.meta.env.BASE_URL}${chapter.image}`}
-          alt={`Chapter ${chapterNum}`}
+          alt="Story logo"
         />
       </ChapterLogo>
+
 
       <ChapterWrapper>
         <ChapterContainer ref={contentRef}>
