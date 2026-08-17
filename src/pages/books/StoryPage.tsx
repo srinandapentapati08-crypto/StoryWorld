@@ -159,7 +159,7 @@ const BackLink = styled(RouterLink)`
   @media (min-width: 768px) {
     position: fixed;
     top: 1.2rem;
-    left: 5.5rem; /* ⬅ logo pakkana */
+    left: 5.5rem; /*  logo pakkana */
     z-index: 998;
   }
 
