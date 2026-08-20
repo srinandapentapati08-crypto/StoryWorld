@@ -3,6 +3,12 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaBook } from 'react-icons/fa';
 
+function getImgSrc(raw: string) {
+  if (!raw) return '';
+  if (raw.startsWith('http')) return raw;
+  return `${import.meta.env.BASE_URL}${raw}`;
+}
+
 interface BookCardProps {
   title: string;
   tagline: string;
@@ -14,7 +20,7 @@ interface BookCardProps {
 
 // Outer wrapper that handles hover
 const CardWrapper = styled.div`
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   height: 100%;
 
   &:hover {
@@ -42,27 +48,30 @@ const Card = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 300px;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
+  display: block;
 `;
 
 const Content = styled.div`
-  padding: 1rem;
+  padding: 1rem 1.1rem 1.25rem;
   display: flex;
   flex-direction: column;
   flex: 1;
 `;
 
 const Title = styled.h3`
-  font-size: 1.4rem;
-  margin: 0 0 0.5rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin: 0 0 0.4rem;
   color: #ffffff;
+  line-height: 1.3;
 `;
 
 const Tagline = styled.p`
-  font-size: 1rem;
-  color: #cccccc;
+  font-size: clamp(0.82rem, 1.5vw, 0.95rem);
+  color: #bbbbbb;
   flex-grow: 1;
+  line-height: 1.5;
 `;
 
 const Meta = styled.div`
@@ -83,7 +92,11 @@ export default function BookCard({
     <CardWrapper>
       <CardLink to={linkPath}>
         <Card>
-          <Image src={`${import.meta.env.BASE_URL}${image}`} alt={title} />
+          <Image
+            src={getImgSrc(image)}
+            alt={title}
+            onError={(e) => { (e.target as HTMLImageElement).src = '/images/cartoon.png'; }}
+          />
           <Content>
             <Title>{title}</Title>
             <Tagline>{tagline}</Tagline>
