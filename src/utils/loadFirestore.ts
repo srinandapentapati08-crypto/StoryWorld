@@ -70,3 +70,40 @@ export async function getChapter(storyId: string, number: number): Promise<Chapt
   const d = snapshot.docs[0];
   return { id: d.id, ...(d.data() as Omit<ChapterDoc, 'id'>) };
 }
+
+export interface StoryRating {
+  average: number; // rounded to nearest 0.5
+  count: number;   // total number of ratings
+}
+
+/** Fetch all feedback docs and compute per-story average ratings */
+export async function getStoryRatings(): Promise<Record<string, StoryRating>> {
+  const snapshot = await getDocs(collection(db, 'feedback'));
+
+  // Group ratings by storyId
+  const groups: Record<string, number[]> = {};
+
+  snapshot.docs.forEach((d) => {
+    const data = d.data();
+    const rating = data.rating as number;
+    if (!rating) return;
+
+    // Support both multi-select (storyIds: string[]) and legacy (storyId: string)
+    const ids: string[] = data.storyIds ?? (data.storyId ? [data.storyId] : []);
+
+    ids.forEach((id) => {
+      if (!groups[id]) groups[id] = [];
+      groups[id].push(rating);
+    });
+  });
+
+  // Compute average rounded to nearest 0.5, and count
+  const result: Record<string, StoryRating> = {};
+  Object.entries(groups).forEach(([id, ratings]) => {
+    const raw = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+    const rounded = Math.round(raw * 2) / 2; // nearest 0.5
+    result[id] = { average: rounded, count: ratings.length };
+  });
+
+  return result;
+}

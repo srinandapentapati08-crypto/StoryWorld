@@ -156,17 +156,21 @@ const GoldBtn = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1.2rem;
-  background: #ffd700;
-  color: #000;
-  border: none;
+  background: transparent;
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.6);
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover { background: #ffe44d; transform: translateY(-1px); }
-  &:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  &:hover {
+    background: rgba(255, 215, 0, 0.12);
+    border-color: #ffd700;
+    transform: translateY(-1px);
+  }
+  &:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 `;
 
 const DangerBtn = styled.button`
@@ -206,8 +210,8 @@ const Spinner = styled.span`
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(0,0,0,0.2);
-  border-top-color: #000;
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  border-top-color: #ffd700;
   border-radius: 50%;
   animation: ${spin} 0.7s linear infinite;
 `;
@@ -297,9 +301,9 @@ const UploadBtn = styled.label`
   align-items: center;
   gap: 0.5rem;
   padding: 0.55rem 1rem;
-  background: rgba(255, 215, 0, 0.1);
+  background: transparent;
   color: #ffd700;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.6);
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -307,7 +311,10 @@ const UploadBtn = styled.label`
   margin-top: 0.75rem;
   transition: all 0.2s ease;
 
-  &:hover { background: rgba(255, 215, 0, 0.2); }
+  &:hover {
+    background: rgba(255, 215, 0, 0.12);
+    border-color: #ffd700;
+  }
 
   input[type='file'] { display: none; }
 `;
