@@ -42,5 +42,10 @@
   "main": "eslint.config.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "allowScripts": {
+    "@firebase/util@1.15.2": true,
+    "esbuild@0.25.12": true,
+    "protobufjs@7.6.5": true
+  }
 }

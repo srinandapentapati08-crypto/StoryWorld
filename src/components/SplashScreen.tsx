@@ -62,8 +62,8 @@ const SpinRing = styled.div`
     from 0deg,
     transparent 0%,
     transparent 60%,
-    #ffd700 80%,
-    #ffaa00 100%
+    #dc143c 80%,
+    #ff2a4a 100%
   );
   animation: ${spin} 1.2s linear infinite;
 
@@ -87,15 +87,14 @@ const AvatarCircle = styled.div`
   overflow: hidden;
   background: #111;
   box-shadow:
-    0 0 0 3px rgba(255, 215, 0, 0.25),
-    0 0 40px rgba(255, 170, 0, 0.2);
+    0 0 0 3px rgba(220, 20, 60, 0.3),
+    0 0 40px rgba(220, 20, 60, 0.25);
   animation: ${pulse} 2.4s ease-in-out infinite;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* shift slightly up so the character is better centred */
     object-position: center 15%;
   }
 `;
@@ -103,7 +102,7 @@ const AvatarCircle = styled.div`
 const AppName = styled.p`
   font-family: 'Georgia', serif;
   font-size: clamp(1rem, 4vw, 1.3rem);
-  color: rgba(255, 215, 0, 0.75);
+  color: rgba(220, 20, 60, 0.8);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   animation: ${fadeIn} 0.6s ease 0.25s both;

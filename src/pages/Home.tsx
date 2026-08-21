@@ -4,10 +4,11 @@ import BookCard from '../components/BookCard';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStories, type StoryDoc } from '../utils/loadFirestore';
+import { getStories, getStoryRatings, type StoryDoc, type StoryRating } from '../utils/loadFirestore';
 import { loadSheet } from '../utils/loadSheet';
 import { useAuth } from '../context/AuthContext';
-import { FaSignOutAlt, FaSignInAlt, FaUserShield } from 'react-icons/fa';
+import { FaSignOutAlt, FaSignInAlt, FaUserShield, FaUser } from 'react-icons/fa';
+import FeedbackSection from '../components/FeedbackSection';
 
 /* ================= ANIMATIONS ================= */
 
@@ -69,15 +70,15 @@ const UserAvatar = styled.div<{ $src?: string }>`
   height: 30px;
   border-radius: 50%;
   overflow: hidden;
-  background: #ffd700;
+  background: #8f0a0a;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 0.7rem;
-  color: #000;
+  color: #fff;
   cursor: default;
-  border: 2px solid rgba(255, 215, 0, 0.4);
+  border: 2px solid rgba(143, 10, 10, 0.5);
   flex-shrink: 0;
 
   img {
@@ -104,7 +105,7 @@ const HeaderBtn = styled.button`
   border-radius: 50%;
   font-size: 0.82rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  border: 1px solid rgba(143, 10, 10, 0.5);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -126,17 +127,18 @@ const HeaderBtn = styled.button`
 `;
 
 const SignInBtn = styled(HeaderBtn)`
-  background: #ffd700;
-  color: #000;
+  background: #c0392b;
+  color: #fff;
 
   &:hover {
-    background: #ffe44d;
+    background: #e74c3c;
   }
 `;
 
 const LogoutBtn = styled(HeaderBtn)`
   background: rgba(255, 255, 255, 0.07);
   color: #ccc;
+  border-color: rgba(255, 255, 255, 0.2);
 
   &:hover {
     background: rgba(255, 255, 255, 0.15);
@@ -144,12 +146,25 @@ const LogoutBtn = styled(HeaderBtn)`
   }
 `;
 
-const AdminBtn = styled(HeaderBtn)`
-  background: rgba(255, 215, 0, 0.12);
-  color: #ffd700;
+const AboutMeBtn = styled(HeaderBtn)`
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255,255,255,0.7);
+  border-color: rgba(255, 255, 255, 0.18);
 
   &:hover {
-    background: rgba(255, 215, 0, 0.25);
+    background: rgba(255, 255, 255, 0.13);
+    color: #fff;
+  }
+`;
+
+const AdminBtn = styled(HeaderBtn)`
+  background: rgba(143, 10, 10, 0.18);
+  color: #e05555;
+  border-color: rgba(143, 10, 10, 0.5);
+
+  &:hover {
+    background: rgba(143, 10, 10, 0.32);
+    color: #ff7070;
   }
 `;
 
@@ -239,6 +254,7 @@ export default function Home() {
   const [$isshrunk, setIsShrunk] = useState(false);
   const [stories, setStories] = useState<StoryDoc[]>([]);
   const [loading, setLoading] = useState(true);
+  const [ratings, setRatings] = useState<Record<string, StoryRating>>({});
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -246,6 +262,10 @@ export default function Home() {
     const onScroll = () => setIsShrunk(window.scrollY > 100);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    getStoryRatings().then(setRatings).catch(() => {}); // silent fail
   }, []);
 
   useEffect(() => {
@@ -313,6 +333,10 @@ export default function Home() {
                 initials
               )}
             </UserAvatar>
+            <AboutMeBtn onClick={() => navigate('/about')} title="About Me" aria-label="About Me">
+              <FaUser />
+              <span className="btn-label">About Me</span>
+            </AboutMeBtn>
             <LogoutBtn onClick={() => logout()} title="Sign Out" aria-label="Sign Out">
               <FaSignOutAlt />
               <span className="btn-label">Sign Out</span>
@@ -353,12 +377,20 @@ export default function Home() {
                     tagline={story.tagline}
                     image={story.image}
                     comingSoon={story.comingSoon}
+                    rating={ratings[story.id] ?? null}
                     showIcon
                   />
                 </motion.div>
               ))
             )}
           </GridContainer>
+
+          {!loading && stories.length > 0 && (
+            <FeedbackSection
+              stories={stories}
+              onSubmitted={() => getStoryRatings().then(setRatings).catch(() => {})}
+            />
+          )}
         </Overlay>
       </PageWrapper>
     </>
