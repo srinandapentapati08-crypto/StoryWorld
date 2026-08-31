@@ -17,6 +17,7 @@ body {
   color: #eee;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
+  padding-bottom: 56px; /* prevent content hiding behind fixed MiniBar */
 }
 
 a {

@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getChapters, getChapter, getStory, type ChapterDoc } from '../../utils/loadFirestore';
 import { loadSheet } from '../../utils/loadSheet';
+import MiniBar from '../../components/MiniBar';
 
 /* ================= STYLES ================= */
 
@@ -478,6 +479,7 @@ export default function ChapterPage() {
           <BackLink to={`/books/${slug}`}>← Back to Chapters</BackLink>
         </ChapterContainer>
       </ChapterWrapper>
+      <MiniBar transparent />
     </>
   );
 }

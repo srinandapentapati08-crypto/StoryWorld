@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import Footer from '../components/Footer';
 import { FaEnvelope, FaInstagram, FaHome } from 'react-icons/fa';
+import MiniBar from '../components/MiniBar';
 
 /* ── Animations ── */
 
@@ -543,8 +543,7 @@ export default function About() {
           </BioText>
         </BioSection>
       </Content>
-
-      <Footer transparent={false} />
+      <MiniBar />
     </PageWrapper>
   );
 }
