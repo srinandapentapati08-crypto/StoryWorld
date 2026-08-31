@@ -8,6 +8,7 @@ import { getStory, getChapters } from '../../utils/loadFirestore';
 import { loadSheet } from '../../utils/loadSheet';
 import { useAuth } from '../../context/AuthContext';
 import { FaHome } from 'react-icons/fa';
+import MiniBar from '../../components/MiniBar';
 
 interface ChapterItem {
   id: string;
@@ -533,6 +534,7 @@ export default function StoryPage() {
           )}
         </ContentWrapper>
       </ContentSection>
+      <MiniBar />
     </PageWrapper>
   );
 }

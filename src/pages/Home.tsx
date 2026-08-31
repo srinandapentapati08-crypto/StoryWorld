@@ -3,12 +3,12 @@ import styled, { keyframes } from 'styled-components';
 import BookCard from '../components/BookCard';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getStories, getStoryRatings, type StoryDoc, type StoryRating } from '../utils/loadFirestore';
+import { useNavigate } from 'react-router-dom';import { getStories, getStoryRatings, type StoryDoc, type StoryRating } from '../utils/loadFirestore';
 import { loadSheet } from '../utils/loadSheet';
 import { useAuth } from '../context/AuthContext';
 import { FaSignOutAlt, FaSignInAlt, FaUserShield, FaUser } from 'react-icons/fa';
 import FeedbackSection from '../components/FeedbackSection';
+import Footer from '../components/Footer';
 
 /* ================= ANIMATIONS ================= */
 
@@ -393,6 +393,8 @@ export default function Home() {
           )}
         </Overlay>
       </PageWrapper>
+
+      <Footer stories={stories} />
     </>
   );
 }

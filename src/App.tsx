@@ -6,11 +6,11 @@ import StoryPage from './pages/books/StoryPage';
 import ChapterPage from './pages/books/ChapterPage';
 import Login from './pages/Login';
 import About from './pages/About';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
-import Footer from './components/Footer';
-
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] as const } },
@@ -29,18 +29,6 @@ function PageTransition({ children }: { children: React.ReactNode }) {
       {children}
     </motion.div>
   );
-}
-
-/* Pages that should NOT show the shared footer (they handle it themselves or it's not needed) */
-const NO_FOOTER_PATHS = ['/admin', '/login', '/about'];
-
-function AppFooter() {
-  const { pathname } = useLocation();
-  const hide = NO_FOOTER_PATHS.some((p) => pathname.startsWith(p));
-  if (hide) return null;
-  // ChapterPage gets a transparent footer that brightens on scroll
-  const isChapter = /\/books\/.+\/chapter\//.test(pathname);
-  return <Footer transparent={isChapter} />;
 }
 
 function App() {
@@ -65,6 +53,24 @@ function App() {
             element={
               <PageTransition>
                 <About />
+              </PageTransition>
+            }
+          />
+
+          <Route
+            path="/privacy"
+            element={
+              <PageTransition>
+                <Privacy />
+              </PageTransition>
+            }
+          />
+
+          <Route
+            path="/terms"
+            element={
+              <PageTransition>
+                <Terms />
               </PageTransition>
             }
           />
@@ -115,8 +121,7 @@ function App() {
         </Routes>
       </AnimatePresence>
 
-      {/* Shared footer — rendered outside AnimatePresence so it doesn't flicker on transition */}
-      <AppFooter />
+      {/* Footer lives only on the Home page — rendered there directly */}
     </>
   );
 }

@@ -1,255 +1,282 @@
 // src/components/Footer.tsx
-import { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import styled from 'styled-components';
 
-/* ── Animations ── */
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+interface FooterProps {
+  stories: { id: string; title: string; comingSoon: boolean }[];
+}
+
+/* ================= STYLED COMPONENTS ================= */
+
+const FooterWrap = styled.footer`
+  background: linear-gradient(to bottom, transparent 0%, rgba(8,5,8,0.98) 100%);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 3.5rem clamp(1.5rem, 6vw, 5rem) 0.75rem;
+  margin-top: 4rem;
 `;
 
-/* ── Styled ── */
+const FooterGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  margin-bottom: 1.25rem;
 
-const FooterBar = styled.footer<{ $opacity: number; $solid: boolean }>`
-  width: 100%;
-  padding: 1rem 1.5rem;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    margin-bottom: 0.75rem;
+  }
+`;
+
+const BrandCol = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.9rem;
+
+  @media (max-width: 768px) {
+    grid-column: 1 / -1;
+  }
+`;
+
+const FooterLogoRow = styled.div`
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem 1.25rem;
-  font-size: 0.75rem;
-  font-family: 'Inter', sans-serif;
-  position: relative;
-  z-index: 10;
-  transition: opacity 0.5s ease, background 0.5s ease;
-  opacity: ${(p) => p.$opacity};
-
-  ${(p) =>
-    p.$solid
-      ? css`
-          background: rgba(0, 0, 0, 0.55);
-          backdrop-filter: blur(10px);
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
-        `
-      : css`
-          background: transparent;
-        `}
+  gap: 0.75rem;
 `;
 
-const Copy = styled.span`
-  color: rgba(255, 255, 255, 0.55);
-  white-space: nowrap;
+const FooterLogo = styled.div`
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,215,0,0.25);
+  box-shadow: 0 0 16px rgba(143,3,3,0.3);
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
-const Heart = styled.span`
-  color: #c0392b;
+const BrandName = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
 `;
 
-const Sep = styled.span`
-  color: rgba(255, 255, 255, 0.2);
+const BrandTagline = styled.div`
+  font-size: 0.72rem;
+  color: rgba(255,215,0,0.55);
+  letter-spacing: 0.05em;
 `;
 
-const FooterLink = styled.button`
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.75rem;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-  font-family: inherit;
-  &:hover { color: rgba(255, 255, 255, 0.85); }
+const BrandDesc = styled.p`
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.65;
+  max-width: 280px;
 `;
 
-const AboutLink = styled(Link)`
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.75rem;
+const EmailBtn = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.76rem;
   text-decoration: none;
-  transition: color 0.2s;
-  &:hover { color: rgba(255, 255, 255, 0.85); }
+  width: fit-content;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: rgba(255,215,0,0.35);
+    color: #ffd700;
+    background: rgba(255,215,0,0.06);
+  }
 `;
 
-/* ── Modals ── */
+const ColTitle = styled.h4`
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 1rem;
+`;
 
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 9000;
+const ColLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+`;
+
+const ColLink = styled(RouterLink)`
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.42);
+  text-decoration: none;
+  transition: color 0.18s;
+  &:hover { color: #ffd700; }
+`;
+
+const ColAnchor = styled.a`
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.42);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.18s;
+  &:hover { color: #ffd700; }
+`;
+
+const ColMuted = styled.span`
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+`;
+
+const FooterDivider = styled.div`
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent);
+  margin: 0 0 0.75rem 0;
+`;
+
+const BottomBar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  animation: ${fadeIn} 0.2s ease;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
 `;
 
-const ModalBox = styled.div`
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  max-width: 560px;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 2rem 1.75rem;
-  color: #ccc;
-  font-size: 0.9rem;
-  line-height: 1.75;
-  animation: ${fadeIn} 0.25s ease;
-
-  h2 { color: #fff; font-size: 1.15rem; margin-bottom: 1.25rem; }
-  h3 { color: #ffd700; font-size: 0.88rem; margin: 1.25rem 0 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  p  { margin-bottom: 0.75rem; }
-  a  { color: #ffd700; text-decoration: underline; }
+const Copyright = styled.p`
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.4);
+  span { color: rgba(255,215,0,0.6); }
 `;
 
-const CloseBtn = styled.button`
-  float: right;
-  background: none;
-  border: none;
-  color: #888;
-  font-size: 1.4rem;
-  cursor: pointer;
-  line-height: 1;
-  margin: -0.25rem -0.25rem 0 0;
-  &:hover { color: #fff; }
+const MadeWith = styled.p`
+  font-size: 0.73rem;
+  color: rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 `;
 
-function TermsModal({ onClose }: { onClose: () => void }) {
+const Heart = styled.span`color: #c0392b;`;
+
+const LegalLinks = styled.div`
+  display: flex;
+  gap: 1.25rem;
+`;
+
+const LegalLink = styled(RouterLink)`
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.18s;
+  &:hover { color: rgba(255,255,255,0.7); }
+`;
+
+const LegalAnchor = styled.a`
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.18s;
+  &:hover { color: rgba(255,255,255,0.7); }
+`;
+
+/* ================= COMPONENT ================= */
+
+export default function Footer({ stories }: FooterProps) {
   return (
-    <Overlay onClick={onClose}>
-      <ModalBox onClick={(e) => e.stopPropagation()}>
-        <CloseBtn onClick={onClose}>×</CloseBtn>
-        <h2>Terms of Use</h2>
-        <p>Last updated: {new Date().getFullYear()}</p>
-        <h3>1. Access</h3>
-        <p>This platform is a personal creative project by Srinanda Pentapati. Access is provided free of charge for personal, non-commercial reading enjoyment.</p>
-        <h3>2. Content Ownership</h3>
-        <p>All stories, characters, and written content on Story World are original works owned by Srinanda Pentapati. You may not copy, reproduce, distribute, or publish any content without prior written permission.</p>
-        <h3>3. User Conduct</h3>
-        <p>By accessing this site you agree not to misuse the platform, attempt to gain unauthorized access, or engage in any activity that disrupts the service.</p>
-        <h3>4. Feedback</h3>
-        <p>Feedback and ratings submitted through this platform may be used to improve the site and stories. They will not be shared publicly with your personal information.</p>
-        <h3>5. Changes</h3>
-        <p>These terms may be updated at any time. Continued use of the platform implies acceptance of the current terms.</p>
-        <h3>6. Contact</h3>
-        <p>Questions? Reach out at <a href="mailto:srinandapentapati@gmail.com">srinandapentapati@gmail.com</a>.</p>
-      </ModalBox>
-    </Overlay>
-  );
-}
+    <FooterWrap>
+      <FooterGrid>
 
-function PrivacyModal({ onClose }: { onClose: () => void }) {
-  return (
-    <Overlay onClick={onClose}>
-      <ModalBox onClick={(e) => e.stopPropagation()}>
-        <CloseBtn onClick={onClose}>×</CloseBtn>
-        <h2>Privacy Policy</h2>
-        <p>Last updated: {new Date().getFullYear()}</p>
-        <h3>What We Collect</h3>
-        <p>When you sign in with Google, we store your display name, email, and profile photo via Firebase Authentication. When you submit feedback, we store your star rating and optional message, linked to the stories you selected — not to your personal identity.</p>
-        <h3>How We Use It</h3>
-        <p>Authentication data is used solely to identify you as a logged-in reader. Feedback data is used to display aggregate ratings on story cards and to help the author understand reader preferences.</p>
-        <h3>Third Parties</h3>
-        <p>This site uses Firebase (by Google) for authentication and data storage. Google's privacy policy applies to their services. No other third-party services receive your data.</p>
-        <h3>Your Rights</h3>
-        <p>You may request deletion of your data at any time by contacting <a href="mailto:srinandapentapati@gmail.com">srinandapentapati@gmail.com</a>.</p>
-        <h3>Cookies</h3>
-        <p>Firebase uses browser storage to maintain your authentication session. No advertising or tracking cookies are used.</p>
-      </ModalBox>
-    </Overlay>
-  );
-}
+        {/* Brand */}
+        <BrandCol>
+          <FooterLogoRow>
+            <FooterLogo>
+              <img src={`${import.meta.env.BASE_URL}images/cartoon.png`} alt="logo" />
+            </FooterLogo>
+            <div>
+              <BrandName>Nanda's Story World</BrandName>
+              <BrandTagline>Every story matters</BrandTagline>
+            </div>
+          </FooterLogoRow>
+          <BrandDesc>
+            A personal space for stories that linger — thrillers, fantasies,
+            and worlds beyond imagination. Written with heart, shared with love.
+          </BrandDesc>
+          <EmailBtn href="mailto:pensrinanda@gmail.com">
+            ✉ Email
+          </EmailBtn>
+        </BrandCol>
 
-function ContactModal({ onClose }: { onClose: () => void }) {
-  return (
-    <Overlay onClick={onClose}>
-      <ModalBox onClick={(e) => e.stopPropagation()}>
-        <CloseBtn onClick={onClose}>×</CloseBtn>
-        <h2>Contact</h2>
-        <p>Have a question, suggestion, or just want to say hello?</p>
-        <h3>Email</h3>
-        <p><a href="mailto:srinandapentapati@gmail.com">srinandapentapati@gmail.com</a></p>
-        <h3>Instagram</h3>
-        <p><a href="https://www.instagram.com/srinanda_pentapati" target="_blank" rel="noopener noreferrer">@srinanda_pentapati</a></p>
-        <h3>Phone</h3>
-        <p>+91 73822 26128</p>
-        <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.3)', fontSize: '0.82rem' }}>Response time is usually within 48 hours.</p>
-      </ModalBox>
-    </Overlay>
-  );
-}
+        {/* Stories */}
+        <div>
+          <ColTitle>Stories</ColTitle>
+          <ColLinks>
+            {stories
+              .filter((s) => !s.comingSoon)
+              .map((s) => (
+                <ColLink key={s.id} to={`/books/${s.id}`}>
+                  {s.title}
+                </ColLink>
+              ))}
+            {stories.some((s) => s.comingSoon) && (
+              <ColMuted>More coming…</ColMuted>
+            )}
+          </ColLinks>
+        </div>
 
-/* ── Scroll-aware wrapper for chapter pages ── */
+        {/* Navigate */}
+        <div>
+          <ColTitle>Navigate</ColTitle>
+          <ColLinks>
+            <ColLink to="/">Home</ColLink>
+            <ColAnchor href="#feedback">Leave Feedback</ColAnchor>
+            <ColLink to="/about">About the Author</ColLink>
+          </ColLinks>
+        </div>
 
-function ChapterFooter() {
-  const [atBottom, setAtBottom] = useState(false);
+        {/* About */}
+        <div>
+          <ColTitle>About</ColTitle>
+          <ColLinks>
+            <ColLink to="/about">About the Author</ColLink>
+            <ColLink to="/privacy">Privacy Policy</ColLink>
+            <ColLink to="/terms">Terms of Use</ColLink>
+            <ColAnchor href="mailto:pensrinanda@gmail.com">Contact</ColAnchor>
+          </ColLinks>
+        </div>
 
-  useEffect(() => {
-    const check = () => {
-      const scrolled = window.scrollY + window.innerHeight;
-      const total = document.documentElement.scrollHeight;
-      // "at bottom" = within 60px of the very bottom
-      setAtBottom(total - scrolled < 60);
-    };
-    window.addEventListener('scroll', check, { passive: true });
-    check();
-    return () => window.removeEventListener('scroll', check);
-  }, []);
+      </FooterGrid>
 
-  const [modal, setModal] = useState<'terms' | 'privacy' | 'contact' | null>(null);
+      <FooterDivider />
 
-  return (
-    <>
-      <FooterBar $opacity={atBottom ? 1 : 0.15} $solid={atBottom}>
-        <Copy>© {new Date().getFullYear()} Story World · Made with <Heart>♥</Heart> by Nanda</Copy>
-        <Sep>·</Sep>
-        <AboutLink to="/about">About</AboutLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('privacy')}>Privacy</FooterLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('terms')}>Terms</FooterLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('contact')}>Contact</FooterLink>
-      </FooterBar>
-      {modal === 'terms'   && <TermsModal   onClose={() => setModal(null)} />}
-      {modal === 'privacy' && <PrivacyModal onClose={() => setModal(null)} />}
-      {modal === 'contact' && <ContactModal onClose={() => setModal(null)} />}
-    </>
-  );
-}
-
-/* ── Main export ── */
-
-type ModalType = 'terms' | 'privacy' | 'contact' | null;
-
-export default function Footer({ transparent }: { transparent?: boolean }) {
-  const { pathname } = useLocation();
-  const isChapter = /\/books\/.+\/chapter\//.test(pathname);
-
-  // Chapter pages get scroll-aware footer
-  if (transparent ?? isChapter) return <ChapterFooter />;
-
-  const [modal, setModal] = useState<ModalType>(null);
-
-  return (
-    <>
-      <FooterBar $opacity={1} $solid={true}>
-        <Copy>© {new Date().getFullYear()} Story World · Made with <Heart>♥</Heart> by Nanda</Copy>
-        <Sep>·</Sep>
-        <AboutLink to="/about">About</AboutLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('privacy')}>Privacy</FooterLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('terms')}>Terms</FooterLink>
-        <Sep>·</Sep>
-        <FooterLink onClick={() => setModal('contact')}>Contact</FooterLink>
-      </FooterBar>
-      {modal === 'terms'   && <TermsModal   onClose={() => setModal(null)} />}
-      {modal === 'privacy' && <PrivacyModal onClose={() => setModal(null)} />}
-      {modal === 'contact' && <ContactModal onClose={() => setModal(null)} />}
-    </>
+      <BottomBar>
+        <Copyright>
+          © 2025 <span>Nanda's Story World</span>. All rights reserved.
+        </Copyright>
+        <MadeWith>
+          Made with <Heart>♥</Heart> by Nanda
+        </MadeWith>
+        <LegalLinks>
+          <LegalLink to="/privacy">Privacy</LegalLink>
+          <LegalLink to="/terms">Terms</LegalLink>
+          <LegalAnchor href="mailto:pensrinanda@gmail.com">Contact</LegalAnchor>
+        </LegalLinks>
+      </BottomBar>
+    </FooterWrap>
   );
 }
