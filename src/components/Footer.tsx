@@ -11,25 +11,27 @@ interface FooterProps {
 const FooterWrap = styled.footer`
   background: linear-gradient(to bottom, transparent 0%, rgba(8,5,8,0.98) 100%);
   border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 3.5rem clamp(1.5rem, 6vw, 5rem) 0.75rem;
+  padding: 2.5rem clamp(1.5rem, 6vw, 5rem) 3rem;
   margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const FooterGrid = styled.div`
   display: grid;
   grid-template-columns: 1.8fr 1fr 1fr 1fr;
   gap: 2.5rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 2rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
   }
 `;
 
@@ -144,55 +146,7 @@ const ColMuted = styled.span`
 `;
 
 const FooterDivider = styled.div`
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent);
-  margin: 0 0 0.75rem 0;
-`;
-
-const BottomBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-bottom: 0.5rem;
-`;
-
-const Copyright = styled.p`
-  font-size: 0.74rem;
-  color: rgba(255,255,255,0.4);
-  span { color: rgba(255,215,0,0.6); }
-`;
-
-const MadeWith = styled.p`
-  font-size: 0.73rem;
-  color: rgba(255,255,255,0.35);
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-`;
-
-const Heart = styled.span`color: #c0392b;`;
-
-const LegalLinks = styled.div`
-  display: flex;
-  gap: 1.25rem;
-`;
-
-const LegalLink = styled(RouterLink)`
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.35);
-  text-decoration: none;
-  transition: color 0.18s;
-  &:hover { color: rgba(255,255,255,0.7); }
-`;
-
-const LegalAnchor = styled.a`
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.35);
-  text-decoration: none;
-  transition: color 0.18s;
-  &:hover { color: rgba(255,255,255,0.7); }
+  display: none;
 `;
 
 /* ================= COMPONENT ================= */
@@ -264,19 +218,6 @@ export default function Footer({ stories }: FooterProps) {
 
       <FooterDivider />
 
-      <BottomBar>
-        <Copyright>
-          © 2025 <span>Nanda's Story World</span>. All rights reserved.
-        </Copyright>
-        <MadeWith>
-          Made with <Heart>♥</Heart> by Nanda
-        </MadeWith>
-        <LegalLinks>
-          <LegalLink to="/privacy">Privacy</LegalLink>
-          <LegalLink to="/terms">Terms</LegalLink>
-          <LegalAnchor href="mailto:pensrinanda@gmail.com">Contact</LegalAnchor>
-        </LegalLinks>
-      </BottomBar>
     </FooterWrap>
   );
 }

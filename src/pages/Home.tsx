@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { FaSignOutAlt, FaSignInAlt, FaUserShield, FaUser } from 'react-icons/fa';
 import FeedbackSection from '../components/FeedbackSection';
 import Footer from '../components/Footer';
+import MiniBar from '../components/MiniBar';
 
 /* ================= ANIMATIONS ================= */
 
@@ -169,7 +170,6 @@ const AdminBtn = styled(HeaderBtn)`
 `;
 
 const PageWrapper = styled.div`
-  min-height: 100vh;
   background-image: url('/story-world-bg.jpg');
   background-size: cover;
   background-position: center;
@@ -178,7 +178,6 @@ const PageWrapper = styled.div`
 
 const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.72);
-  min-height: 100vh;
   padding: 5rem 1.25rem 4rem;
 
   @media (min-width: 480px) {
@@ -248,6 +247,16 @@ const SkeletonCard = styled.div`
   height: 380px;
 `;
 
+const PageLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.div`
+  flex: 1;
+`;
+
 /* ================= COMPONENT ================= */
 
 export default function Home() {
@@ -312,7 +321,7 @@ export default function Home() {
     : user?.email?.[0]?.toUpperCase() ?? '?';
 
   return (
-    <>
+    <PageLayout>
       <LogoContainer $isshrunk={$isshrunk}>
         <img src="/images/cartoon.png" alt="StoryWorld" />
       </LogoContainer>
@@ -350,51 +359,54 @@ export default function Home() {
         )}
       </HeaderActions>
 
-      <PageWrapper>
-        <Overlay>
-          <TitleRow>
-            <Title>Welcome to Nanda's Story World</Title>
-          </TitleRow>
+      <MainContent>
+        <PageWrapper>
+          <Overlay>
+            <TitleRow>
+              <Title>Welcome to Nanda's Story World</Title>
+            </TitleRow>
 
-          <Subtitle>
-            Discover immersive tales that transport you beyond imagination.
-          </Subtitle>
+            <Subtitle>
+              Discover immersive tales that transport you beyond imagination.
+            </Subtitle>
 
-          <GridContainer>
-            {loading ? (
-              Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-            ) : (
-              stories.map((story, index) => (
-                <motion.div
-                  key={story.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.08, duration: 0.4 }}
-                >
-                  <BookCard
-                    slug={story.id}
-                    title={story.title}
-                    tagline={story.tagline}
-                    image={story.image}
-                    comingSoon={story.comingSoon}
-                    rating={ratings[story.id] ?? null}
-                    showIcon
-                  />
-                </motion.div>
-              ))
+            <GridContainer>
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+              ) : (
+                stories.map((story, index) => (
+                  <motion.div
+                    key={story.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.08, duration: 0.4 }}
+                  >
+                    <BookCard
+                      slug={story.id}
+                      title={story.title}
+                      tagline={story.tagline}
+                      image={story.image}
+                      comingSoon={story.comingSoon}
+                      rating={ratings[story.id] ?? null}
+                      showIcon
+                    />
+                  </motion.div>
+                ))
+              )}
+            </GridContainer>
+
+            {!loading && stories.length > 0 && (
+              <FeedbackSection
+                stories={stories}
+                onSubmitted={() => getStoryRatings().then(setRatings).catch(() => {})}
+              />
             )}
-          </GridContainer>
-
-          {!loading && stories.length > 0 && (
-            <FeedbackSection
-              stories={stories}
-              onSubmitted={() => getStoryRatings().then(setRatings).catch(() => {})}
-            />
-          )}
-        </Overlay>
-      </PageWrapper>
+          </Overlay>
+        </PageWrapper>
+      </MainContent>
 
       <Footer stories={stories} />
-    </>
+      <MiniBar />
+    </PageLayout>
   );
 }
